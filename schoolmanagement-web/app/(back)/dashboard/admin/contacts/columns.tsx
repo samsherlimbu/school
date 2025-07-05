@@ -36,23 +36,59 @@ export const columns: ColumnDef<Contact>[] = [
   //   enableSorting: false,
   //   enableHiding: false,
   // },
-  {
-    accessorKey: "fullName",
-    header: ({ column }) => <SortableColumn column={column} title="fullName" />,
+    {
+    accessorKey: "user",
+    header:'User',
+    cell:({row})=>{
+      const contact = row.original;
+      return (
+        <div className="">
+          <h2 className="font-medium capitalize">
+            {
+              contact.fullName.toLowerCase()
+            }
+          </h2>
+          <p className="text-xs text-muted-foreground">{contact.school}</p>
+        </div>
+      )
+    }
+  },
+      {
+    accessorKey: "Email-Phone",
+    header:'Email-Phone',
+    cell:({row})=>{
+      const contact = row.original;
+      return (
+        <div className="">
+          <h2 className="font-medium capitalize">
+            {
+              contact.email.toLowerCase()
+            }
+          </h2>
+          <p className="text-xs text-muted-foreground">{contact.phone}</p>
+        </div>
+      )
+    }
   },
  
-  {
-    accessorKey: "email",
-    header: 'email',
-  },
-  {
-    accessorKey: "phone",
-    header: "phone",
-  },
-  {
-    accessorKey: "school",
-    header: "school",
-  },
+
+  // {
+  //   accessorKey: "fullName",
+  //   header: ({ column }) => <SortableColumn column={column} title="fullName" />,
+  // },
+ 
+  // {
+  //   accessorKey: "email",
+  //   header: 'email',
+  // },
+  // {
+  //   accessorKey: "phone",
+  //   header: "phone",
+  // },
+  // {
+  //   accessorKey: "school",
+  //   header: "school",
+  // },
   {
     accessorKey: "country",
     header: "country",

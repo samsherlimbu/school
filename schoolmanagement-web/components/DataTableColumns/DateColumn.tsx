@@ -1,3 +1,5 @@
+'use client';
+
 import { getNormalDate } from "@/lib/getNormalDate";
 import React from "react";
 
@@ -41,5 +43,5 @@ export default function DateColumn({ row, accessorKey }: DateColumnProps) {
   const time = timeAgo(createdAt);
   const pastDays = getPastDays(createdAt);
 
-  return <div>{pastDays > 10 ? date : time}</div>;
+  return <div suppressHydrationWarning>{pastDays > 10 ? date : time}</div>;
 }
