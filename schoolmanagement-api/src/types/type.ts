@@ -28,3 +28,20 @@ export type StreamCreateProps ={
   slug:string;
   classId:string;
 };
+
+export type ParentProps = {
+  ParentName: string;
+  email: string;
+  relationShip: string;
+  NIN: string;
+  gender: string;
+  dob: string;
+  state: string;
+  occupation: string;
+  address: string;
+  preferenceContactMethod: string;
+  password: string;
+  phone: string;
+  imageUrl?: string;
+  country: string;
+};

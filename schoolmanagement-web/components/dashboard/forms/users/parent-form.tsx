@@ -13,6 +13,7 @@ import FormSelectInput from "@/components/FormInputs/formSelectInput";
 // Import country list manually
 import countryList from "react-select-country-list";
 import CustomPhoneInput from "@/components/FormInputs/phoneInput";
+import { createParent } from "@/actions/parent";
 
 export type SelectOptionProps = {
   label: string;
@@ -24,53 +25,68 @@ type SingleStudentFormProps = {
   initialData?: any | undefined | null;
 };
 
-export type StudentProps = {
-  name: string;
+export type ParentProps = {
+  ParentName: string;
   email: string;
+  relationShip: string;
+  NIN: string;
+  gender: string;
+  dob: string;
+  state: string;
+  occupation: string;
+  address: string;
+  preferenceContactMethod: string;
   password: string;
-  phone?: string;
+  phone: string;
   imageUrl?: string;
-  country?: string;
+  country: string;
 };
 
 export default function ParentForm({
   editingId,
   initialData,
 }: SingleStudentFormProps) {
-  const parents = [
-    { label: "Jane Do", value: "12345676" },
-    { label: "John Doe", value: "1234556" },
-  ];
 
-  const [selectedParent, setSelectedParent] = useState<any>(null);
-  const classes = [
-    { label: "1", value: "12345676" },
-    { label: "2", value: "1234556" },
+
+  const provincesOfNepal = [
+    { label: "Koshi", value: "Koshi" },
+    { label: "Madhesh Province", value: "Madhesh Province" },
+    { label: "Bagmati Province", value: "Bagmati Province" },
+    { label: "Gandaki Province", value: "Gandaki Province" },
+    { label: "Lumbini Province", value: "Lumbini Province" },
+    { label: "Karnali Province", value: "Karnali Province" },
+    { label: "Sudurpashchim Province", value: "Sudurpashchim Province" },
   ];
-  const [selectedClass, setSelectedClass] = useState<any>(null);
+  const [selectedProvince, setSelectedProvince] = useState<any>(provincesOfNepal[0]);
+
   const relationships = [
-    { label: "Father", value: "12345676" },
-    { label: "Mother", value: "1234556" },
+    { label: "Father", value: "Father" },
+    { label: "Mother", value: "Mother" },
+    { label: "Brother", value: "Brother" },
+    { label: "Sister", value: "Sister" },
+    { label: "Guardian", value: "Guardian" },
+    { label: "Other", value: "Other" },
   ];
-  const [selectedRelationShip, setSelectedRelationShip] = useState<any>(null);
+  const [selectedRelationShip, setSelectedRelationShip] = useState<any>(relationships[0]);
   const PreferenceContactMethod = [
-    { label: "Phone", value: "12345676" },
-    { label: "Email", value: "1234556" },
+    { label: "Phone", value: "Phone" },
+    { label: "Email", value: "Phone" },
   ];
   const [selectedPrefernceContactMethod, setSelectedPreferenceContactMethod] =
-    useState<any>(null);
+    useState<any>(PreferenceContactMethod[0]);
 
   const genders = [
     { label: "Male", value: "male" },
     { label: "Female", value: "female" },
+    
   ];
-  const [selectedGender, setSelectedGender] = useState<any>(null);
+  const [selectedGender, setSelectedGender] = useState<any>(genders[0]);
 
   // Get the list of countries using react-select-country-list
   const countryOptions = countryList().getData(); // It will return a list of country objects
 
   const [selectedCountry, setSelectedCountry] = useState<any>(
-    countryOptions.find((c) => c.value === "US") || {
+    countryOptions.find((c) => c.value === "Nepal") || {
       label: "Select Country",
       value: "",
     }
@@ -82,9 +98,9 @@ export default function ParentForm({
     setValue,
     watch,
     formState: { errors },
-  } = useForm<StudentProps>({
+  } = useForm<ParentProps>({
     defaultValues: {
-      name: "",
+      ParentName: "",
     },
   });
 
@@ -93,10 +109,18 @@ export default function ParentForm({
   const initialImage = initialData?.imageUrl || "/images/student.png";
   const [imageUrl, setImageUrl] = useState(initialImage);
 
-  async function saveStudent(data: StudentProps) {
+  
+
+  async function saveStudent(data: ParentProps) {
     try {
       setLoading(true);
       data.imageUrl = imageUrl;
+          // 🟡 Assign selected dropdown values manually
+    data.relationShip = selectedRelationShip?.value || "";
+    data.gender = selectedGender?.value || "";
+    data.state = selectedProvince?.value || "";
+    data.country = selectedCountry?.value || "";
+    data.preferenceContactMethod = selectedPrefernceContactMethod?.value || "";
       console.log(data);
 
       if (editingId) {
@@ -107,12 +131,12 @@ export default function ParentForm({
         // router.push("/dashboard/category");
         // setImageUrl("/placeholder.svg");
       } else {
-        // await createCategory(data)
-        // setLoading(false);
-        // toast.success("Created successfully");
-        // reset();
-        // router.push("/dashboard/category");
-        // setImageUrl("/placeholder.svg");
+       const res = await createParent(data)
+        setLoading(false);
+        toast.success("Parent is Created successfully");
+        reset();
+        router.push("/dashboard//users/parents");
+      
       }
     } catch (error) {
       console.error("Error saving student", error);
@@ -138,7 +162,7 @@ export default function ParentForm({
                 register={register}
                 errors={errors}
                 label="Parent Name"
-                name="name"
+                name="ParentName"
               />
               <TextInput
                 register={register}
@@ -148,7 +172,7 @@ export default function ParentForm({
                 type="email"
               />
               <FormSelectInput
-                label="RelationShip"
+                label="relationShip"
                 options={relationships}
                 option={selectedRelationShip}
                 setOption={setSelectedRelationShip}
@@ -172,9 +196,15 @@ export default function ParentForm({
               <TextInput
                 register={register}
                 errors={errors}
-                label="State"
-                name="state"
-                type="text"
+                label="NationalID/Password"
+                name="NIN"
+              />
+              <FormSelectInput
+                isSearchable={false}
+                label="State / Province"
+                options={provincesOfNepal}
+                option={selectedProvince}
+                setOption={setSelectedProvince}
               />
 
               <PasswordInput
@@ -192,7 +222,7 @@ export default function ParentForm({
                 href="/dashboard/gender/new"
               />
               <FormSelectInput
-                isSearchable={true}
+                isSearchable={false}
                 label="Country"
                 options={countryOptions} // List of country options
                 option={selectedCountry} // Pass the full object here

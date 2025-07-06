@@ -118,7 +118,7 @@ export default function ClassManagement({ classes }: { classes: classType[] }) {
                 </p>
                 
               </div>
-              <SectionForm classId={selectedClass.id} />
+              <SectionForm classId={selectedClass.id}  className={selectedClass.title} />
             </div>
 
             {/* Stream Grid or Empty Message */}

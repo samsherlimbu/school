@@ -14,6 +14,26 @@ export type Contact = {
   updatedAt: string;
 };
 
+export type Parent = {
+  id: string;
+  ParentName: string;
+  email: string;
+  relationShip: string;
+  NIN: string;
+  gender: string;
+  dob: string;
+  state: string;
+  occupation: string;
+  address: string;
+  preferenceContactMethod: string;
+  password: string;
+  phone: string;
+  imageUrl?: string;
+  country: string;
+  createdAt:string;
+  updatedAt: string;
+};
+
 export type ClassCreateProps ={
   title:string;
   // slug:string;
@@ -28,7 +48,7 @@ export type StreamCreateProps ={
 export type classType ={
   id:string;
   title:string;
-  // slug:string;
+  slug:string;
   streams:Stream[];
   createdAt:string;
   updatedAt: string;

@@ -2,6 +2,7 @@ import express from "express";
 import schoolRouter from "./routes/school";
 import adminRouter from "./routes/admin";
 import classRouter from "./routes/classes";
+import parentRouter from "./routes/parent";
 
 require("dotenv").config();
 const cors = require("cors");
@@ -14,7 +15,8 @@ const PORT = process.env.PORT || 8000;
 
 app.use(schoolRouter);
 app.use(adminRouter);
-app.use(classRouter)
+app.use(classRouter);
+app.use(parentRouter);
 
 app.use(express.json());
 app.listen(PORT, () => {

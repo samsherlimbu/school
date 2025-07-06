@@ -13,6 +13,7 @@ import FormSelectInput from "@/components/FormInputs/formSelectInput";
 // Import country list manually
 import countryList from "react-select-country-list";
 import CustomPhoneInput from "@/components/FormInputs/phoneInput";
+import { classType } from "@/types/types";
 
 export type SelectOptionProps = {
   label: string;
@@ -22,6 +23,7 @@ export type SelectOptionProps = {
 type SingleStudentFormProps = {
   editingId?: string | undefined;
   initialData?: any | undefined | null;
+  classes:classType[]
 };
 
 export type StudentProps = {
@@ -36,6 +38,7 @@ export type StudentProps = {
 export default function SingleStudentForm({
   editingId,
   initialData,
+  classes,
 }: SingleStudentFormProps) {
   const parents = [
     { label: "Jane Do", value: "12345676" },
@@ -43,16 +46,21 @@ export default function SingleStudentForm({
   ];
 
   const [selectedParent, setSelectedParent] = useState<any>(null);
-  const classes = [
-    { label: "1", value: "12345676" },
-    { label: "2", value: "1234556" },
-  ];
-  const [selectedClass, setSelectedClass] = useState<any>(null);
-  const sections = [
-    { label: "S1", value: "12345676" },
-    { label: "S2", value: "1234556" },
-  ];
+
+//get the class options from the classes prop
+  const classOptions = classes.map((item) => {
+    return { label: item.title, value: item.id };
+  })
+  const [selectedClass, setSelectedClass] = useState<any>(classOptions[0] || null);
+  const classId = selectedClass?.value || "";
+  // Get the sections based on the selected class
+  const sections = classes.find((item)=> item.id === classId)?.streams || [];
+  // Map sections to options
+  const sectionsOptions = sections.map((item) => {
+    return { label: item.title, value: item.id };
+  })
   const [selectedSection, setSelectedSection] = useState<any>(null);
+  
 
   const genders = [
     { label: "Male", value: "male" },
@@ -199,7 +207,7 @@ export default function SingleStudentForm({
               />
               <FormSelectInput
                 label="Class"
-                options={classes}
+                options={classOptions}
                 option={selectedClass}
                 setOption={setSelectedClass}
                 toolTipText="Add Class"
@@ -207,7 +215,7 @@ export default function SingleStudentForm({
               />
               <FormSelectInput
                 label="Section"
-                options={sections}
+                options={sectionsOptions}
                 option={selectedSection}
                 setOption={setSelectedSection}
                 toolTipText="Add Section"
