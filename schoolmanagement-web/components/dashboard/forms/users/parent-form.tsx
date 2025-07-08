@@ -85,12 +85,9 @@ export default function ParentForm({
   // Get the list of countries using react-select-country-list
   const countryOptions = countryList().getData(); // It will return a list of country objects
 
-  const [selectedCountry, setSelectedCountry] = useState<any>(
-    countryOptions.find((c) => c.value === "Nepal") || {
-      label: "Select Country",
-      value: "",
-    }
-  );
+const defaultCountry = countryOptions.find((c) => c.value === "Nepal") || countryOptions[0];
+const [selectedCountry, setSelectedCountry] = useState<any>(defaultCountry);
+
   const {
     register,
     handleSubmit,
@@ -119,7 +116,7 @@ export default function ParentForm({
     data.relationShip = selectedRelationShip?.value || "";
     data.gender = selectedGender?.value || "";
     data.state = selectedProvince?.value || "";
-    data.country = selectedCountry?.value || "";
+    data.country = selectedCountry?.label || "";
     data.preferenceContactMethod = selectedPrefernceContactMethod?.value || "";
       console.log(data);
 
@@ -222,7 +219,7 @@ export default function ParentForm({
                 href="/dashboard/gender/new"
               />
               <FormSelectInput
-                isSearchable={false}
+                isSearchable={true}
                 label="Country"
                 options={countryOptions} // List of country options
                 option={selectedCountry} // Pass the full object here

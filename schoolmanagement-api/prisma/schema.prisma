@@ -44,6 +44,7 @@ model Class {
   title     String
   slug      String    @unique
   streams   Stream[]
+  students Student[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -56,6 +57,7 @@ model Stream {
   slug      String   @unique
   classId   String
   class     Class    @relation(fields: [classId], references: [id])
+  students Student[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -78,8 +80,44 @@ model Parent {
   phone                      String @unique
   imageUrl                   String?  // optional
   country                    String
+  students                   Student[]
   createdAt                  DateTime @default(now())
   updatedAt                  DateTime @updatedAt
 
   @@map("parents")
+}
+
+
+model Student {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  password      String
+  phone         String
+  dob           String
+  state         String
+  rollNo        String   @unique
+  regNo         String   @unique
+  admissionDate String
+  gender        String
+  imageUrl      String?  // optional
+  country       String
+  description   String
+
+  parentId      String
+  classId       String
+  streamId      String // renamed from sectionId
+
+  parentName    String?
+  classTitle    String?
+  streamTitle    String?
+
+  parent        Parent   @relation(fields: [parentId], references: [id])
+  class         Class    @relation(fields: [classId], references: [id])
+  stream        Stream   @relation(fields: [streamId], references: [id]) // renamed from section
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("students")
 }

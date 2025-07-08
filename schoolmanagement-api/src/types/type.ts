@@ -45,3 +45,25 @@ export type ParentProps = {
   imageUrl?: string;
   country: string;
 };
+
+export type StudentCreateProps = {
+  name: string;
+  email: string;
+  password: string;
+  parentName?:string;
+  classTitle?:string;
+  streamTitle?:string;
+  phone: string;
+  dob:string;
+  state:string;
+  rollNo:string;
+  regNo:string;
+  admissionDate:string;
+  parentId:string;
+  classId:string;
+  streamId:string;
+  gender:string;
+  imageUrl?: string;
+  country: string;
+  description:string;
+};

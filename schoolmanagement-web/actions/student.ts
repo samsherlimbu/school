@@ -1,8 +1,9 @@
 "use server";
 
-import { ParentProps } from "@/components/dashboard/forms/users/parent-form";
+import { StudentProps } from "@/components/dashboard/forms/students/singleStudent-form";
 
-import { Contact, Parent } from "@/types/types";
+
+import { Contact, Parent, Student } from "@/types/types";
 
 import axios from "axios";
 
@@ -17,12 +18,12 @@ const api = axios.create({
   },
 });
 
-export async function createParent(data: ParentProps) {
+export async function createStudent(data: StudentProps) {
   try {
-    const response = await api.post("/parents", data);
+    const response = await api.post("/students", data);
     return response.data;
   } catch (error) {
-    console.error("Parent creation failed:", error);
+    console.error("Student creation failed:", error);
     if (axios.isAxiosError(error)) {
       const message =
         error.response?.data?.message ||
@@ -34,7 +35,7 @@ export async function createParent(data: ParentProps) {
   }
 }
 
-export async function deleteParent(id:string) {
+export async function deleteStudent(id:string) {
   console.log("deleted",id)
   return{
     ok:true
@@ -42,11 +43,11 @@ export async function deleteParent(id:string) {
   
 }
 
-export async function getAllParents(){
+export async function getAllStudents(){
   try {
-     const response = await api.get("/parents");
-     const parents = response.data;
-    return parents as Parent[];
+     const response = await api.get("/students");
+     const students = response.data;
+    return students as Student[];
   } catch (error) {
     console.log(error)
   }

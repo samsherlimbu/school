@@ -24,7 +24,7 @@ export const ourFileRouter = {
   // Route for student profile images
   studentProfileImage: f({
     image: {
-      maxFileSize: "4MB",
+      maxFileSize: "1MB",
       maxFileCount: 1,
     },
   })

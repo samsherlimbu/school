@@ -10,7 +10,7 @@ export type Contact = {
   role: string;
   media: string;
   message: string;
-  createdAt:string;
+  createdAt: string;
   updatedAt: string;
 };
 
@@ -30,36 +30,77 @@ export type Parent = {
   phone: string;
   imageUrl?: string;
   country: string;
-  createdAt:string;
+  createdAt: string;
   updatedAt: string;
 };
 
-export type ClassCreateProps ={
-  title:string;
+export type Student = {
+  id:string;
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  dob: string;
+  state: string;
+  rollNo: string;
+  regNo: string;
+  admissionDate: string;
+  parentId: string;
+  classId: string;
+  streamId: string;
+  parentName?:string;
+  classTitle?:string;
+  streamTitle?:string;
+  gender: string;
+  imageUrl?: string;
+  country: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ClassCreateProps = {
+  title: string;
   // slug:string;
-}
-
-export type StreamCreateProps ={
-  title:string;
-  slug:string;
-  classId:string;
 };
 
-export type classType ={
-  id:string;
-  title:string;
-  slug:string;
-  streams:Stream[];
-  createdAt:string;
+export type StreamCreateProps = {
+  title: string;
+  slug: string;
+  classId: string;
+};
+
+export type classType = {
+  id: string;
+  title: string;
+  slug: string;
+  streams: StreamWithCount[];
+  _count: {
+    students: number;
+  }
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type StreamWithCount ={
+  id: string;
+  title: string;
+  slug: string;
+  classId: string;
+ 
+  _count: {
+    students: number;
+  }
+  createdAt: string;
   updatedAt: string;
 }
 
-export type Stream ={
-  id:string;
-  title:string;
-  slug:string;
-  classId:string;
-  class:classType;
-  createdAt:Date;
+export type Stream = {
+  id: string;
+  title: string;
+  slug: string;
+  classId: string;
+  class: classType;
+  createdAt: Date;
   updatedAt: Date;
-}
+};

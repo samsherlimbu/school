@@ -8,11 +8,13 @@ import BulkStudentForm from "@/components/dashboard/forms/students/bulkStudent-f
 import SingleStudentForm from "@/components/dashboard/forms/students/singleStudent-form"
 import { InfoBanner } from "@/components/info-banner"
 import { getAllClasses } from "@/actions/classes"
+import { getAllParents } from "@/actions/parent"
 
 
 export default async function AdmissionTabs() {
 
   const classes = await getAllClasses() || [];
+  const parents = await getAllParents() || [];
   return (
     <div className="w-full max-w-6xl mx-auto p-4 mt-6">
       <Tabs defaultValue="single" className="w-full">
@@ -37,7 +39,7 @@ export default async function AdmissionTabs() {
             <CardContent className="p-6">
             <TabsContent value="single" className="mt-0">
               <InfoBanner message="Please first create the parent and Class" type="info"  />
-            <SingleStudentForm classes={classes}/>
+            <SingleStudentForm classes={classes} parents={parents}/>
           </TabsContent>
           <TabsContent value="bulk" className="mt-0">
             <BulkStudentForm />

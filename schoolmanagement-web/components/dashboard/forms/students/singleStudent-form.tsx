@@ -10,10 +10,10 @@ import FormFooter from "../formFooter";
 import FormHeader from "../formHeader";
 import PasswordInput from "@/components/FormInputs/passwordInput";
 import FormSelectInput from "@/components/FormInputs/formSelectInput";
-// Import country list manually
 import countryList from "react-select-country-list";
 import CustomPhoneInput from "@/components/FormInputs/phoneInput";
-import { classType } from "@/types/types";
+import { classType, Parent } from "@/types/types";
+import { createStudent } from "@/actions/student";
 
 export type SelectOptionProps = {
   label: string;
@@ -23,50 +23,81 @@ export type SelectOptionProps = {
 type SingleStudentFormProps = {
   editingId?: string | undefined;
   initialData?: any | undefined | null;
-  classes:classType[]
+  classes: classType[];
+  parents: Parent[];
 };
 
 export type StudentProps = {
   name: string;
   email: string;
   password: string;
-  phone?: string;
+  phone: string;
+  dob: string;
+  state: string;
+  rollNo: string;
+  regNo: string;
+  admissionDate: string;
+  parentId: string;
+  classId: string;
+  streamId: string;
+  parentName?: string;
+  classTitle?: string;
+  streamTitle?: string;
+  gender: string;
   imageUrl?: string;
-  country?: string;
+  country: string;
+  description: string;
 };
 
 export default function SingleStudentForm({
   editingId,
   initialData,
   classes,
+  parents,
 }: SingleStudentFormProps) {
-  const parents = [
-    { label: "Jane Do", value: "12345676" },
-    { label: "John Doe", value: "1234556" },
-  ];
+  const parentOptions = parents.map((item) => {
+    return { label: item.ParentName, value: item.id };
+  });
 
   const [selectedParent, setSelectedParent] = useState<any>(null);
 
-//get the class options from the classes prop
+  //get the class options from the classes prop
   const classOptions = classes.map((item) => {
     return { label: item.title, value: item.id };
-  })
-  const [selectedClass, setSelectedClass] = useState<any>(classOptions[0] || null);
+  });
+  const [selectedClass, setSelectedClass] = useState<any>(
+    classOptions[0] || null
+  );
   const classId = selectedClass?.value || "";
   // Get the sections based on the selected class
-  const sections = classes.find((item)=> item.id === classId)?.streams || [];
+  const sections = classes.find((item) => item.id === classId)?.streams || [];
   // Map sections to options
   const sectionsOptions = sections.map((item) => {
     return { label: item.title, value: item.id };
-  })
-  const [selectedSection, setSelectedSection] = useState<any>(null);
-  
+  });
+  const [selectedSection, setSelectedSection] = useState<any>(
+    sectionsOptions[0] || null
+  );
+
+  const provincesOfNepal = [
+    { label: "Koshi", value: "Koshi" },
+    { label: "Madhesh Province", value: "Madhesh Province" },
+    { label: "Bagmati Province", value: "Bagmati Province" },
+    { label: "Gandaki Province", value: "Gandaki Province" },
+    { label: "Lumbini Province", value: "Lumbini Province" },
+    { label: "Karnali Province", value: "Karnali Province" },
+    { label: "Sudurpashchim Province", value: "Sudurpashchim Province" },
+  ];
+
+  const [selectedProvince, setSelectedProvince] = useState<any>(
+    provincesOfNepal[0]
+  );
 
   const genders = [
     { label: "Male", value: "male" },
     { label: "Female", value: "female" },
   ];
-  const [selectedGender, setSelectedGender] = useState<any>(null);
+  const [selectedGender, setSelectedGender] = useState<any>(genders[0] || null);
 
   // Get the list of countries using react-select-country-list
   const countryOptions = countryList().getData(); // It will return a list of country objects
@@ -99,6 +130,15 @@ export default function SingleStudentForm({
     try {
       setLoading(true);
       data.imageUrl = imageUrl;
+      data.parentId = selectedParent?.value || "";
+      data.parentName = selectedParent?.label || "";
+      data.classId = selectedClass?.value || "";
+      data.state = selectedProvince?.value || "";
+      data.classTitle = selectedClass?.label || "";
+      data.streamId = selectedSection?.value || "";
+      data.streamTitle = selectedSection?.label || "";
+      data.gender = selectedGender?.value || "";
+      data.country = selectedCountry?.label || "";
       console.log(data);
 
       if (editingId) {
@@ -109,11 +149,11 @@ export default function SingleStudentForm({
         // router.push("/dashboard/category");
         // setImageUrl("/placeholder.svg");
       } else {
-        // await createCategory(data)
-        // setLoading(false);
-        // toast.success("Created successfully");
-        // reset();
-        // router.push("/dashboard/category");
+        const res = await createStudent(data);
+        setLoading(false);
+        toast.success("Created successfully");
+        reset();
+        router.push("/dashboard/students");
         // setImageUrl("/placeholder.svg");
       }
     } catch (error) {
@@ -165,12 +205,12 @@ export default function SingleStudentForm({
                 name="dob"
                 type="date"
               />
-              <TextInput
-                register={register}
-                errors={errors}
-                label="State"
-                name="state"
-                type="text"
+              <FormSelectInput
+                isSearchable={false}
+                label="State / Province"
+                options={provincesOfNepal}
+                option={selectedProvince}
+                setOption={setSelectedProvince}
               />
               <TextInput
                 register={register}
@@ -199,7 +239,7 @@ export default function SingleStudentForm({
               />
               <FormSelectInput
                 label="Parent"
-                options={parents}
+                options={parentOptions}
                 option={selectedParent}
                 setOption={setSelectedParent}
                 toolTipText="Add New parent"

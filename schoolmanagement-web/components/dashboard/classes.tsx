@@ -11,7 +11,6 @@ import SectionForm from "./forms/academic/section-form";
 import { classType } from "@/types/types";
 
 export default function ClassManagement({ classes }: { classes: classType[] }) {
-  
   const [selectedClass, setSelectedClass] = useState<classType | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -97,7 +96,7 @@ export default function ClassManagement({ classes }: { classes: classType[] }) {
                 <div className="flex items-center justify-between px-4 py-1 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Users className="h-3 w-3" />
-                    <span>{classItem.streams.length} streams</span>
+                    <span>{classItem._count.students} streams</span>
                   </div>
                 </div>
               </div>
@@ -116,9 +115,11 @@ export default function ClassManagement({ classes }: { classes: classType[] }) {
                 <p className="text-sm text-gray-500">
                   Classes / {selectedClass.title}
                 </p>
-                
               </div>
-              <SectionForm classId={selectedClass.id}  className={selectedClass.title} />
+              <SectionForm
+                classId={selectedClass.id}
+                className={selectedClass.title}
+              />
             </div>
 
             {/* Stream Grid or Empty Message */}
@@ -158,11 +159,14 @@ export default function ClassManagement({ classes }: { classes: classType[] }) {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-sm">
-                        <span className="font-medium"> Slug:</span> {stream.slug}
+                      <div className="text-sm mb-2">
+                        <span className="font-medium">Section:</span>
+                        {stream.slug}
                       </div>
-                      <div className="text-sm text-muted-foreground">
-                        ID: {stream.id}
+
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Users className="h-4 w-4" />
+                        <span>{stream._count.students} Students</span>
                       </div>
                     </CardContent>
                   </Card>
