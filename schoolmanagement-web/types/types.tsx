@@ -44,6 +44,7 @@ export type Student = {
   state: string;
   rollNo: string;
   regNo: string;
+  studentType: string;
   admissionDate: string;
   parentId: string;
   classId: string;
@@ -64,6 +65,20 @@ export type ClassCreateProps = {
   // slug:string;
 };
 
+export type DepartmentCreateProps = {
+  name: string;
+  // slug:string;
+};
+export type SubjectCreateProps = {
+  name:string;
+  code:string;
+  shortName:string;
+  category:string;
+  type:string;
+  departmentId:string
+  departmentName:string
+};
+
 export type StreamCreateProps = {
   title: string;
   slug: string;
@@ -80,6 +95,30 @@ export type classType = {
   }
   createdAt: string;
   updatedAt: string;
+};
+
+export type Department = {
+  id: string;
+  name: string;
+  slug: string;
+  hodId?: string;
+  hodName?:string;
+  hodStartDate?:string;
+  budget?: number;
+  budgetYear?: string;
+  teachers:StreamWithCount[];
+  subjects:StreamWithCount[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type  BriefDepartment = {
+  id: string;
+  name: string;
+};
+export type  BriefStudent = {
+  id: string;
+  name: string;
 };
 
 export type StreamWithCount ={
@@ -104,3 +143,40 @@ export type Stream = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+
+export interface Subject {
+  id: string;
+  name: string;
+  slug: string;
+  code: string;
+  shortName?: string;
+  category: SubjectCategory;
+  type: SubjectType;
+  passingMarks?: number;
+  totaMarks?: number;
+  departmentId: string;
+  departmentName: string;
+  isActive: boolean;
+  isOptinal: boolean;
+  hasTheory: boolean;
+  hasPractical: boolean;
+  labRequired: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+export enum SubjectCategory {
+  CORE = "CORE",
+  ELECTIVE = "ELECTIVE",
+  ADDITIONAL = "ADDITIONAL",
+  VOCATIONAL = "VOCATIONAL",
+  LANGUAGE = "LANGUAGE",
+  EXTRA_CURRICULAR = "EXTRA_CURRICULAR",
+}
+
+export enum SubjectType {
+  THEORY = "THEORY",
+  PRACTICAL = "PRACTICAL",
+  BOTH = "BOTH",
+}
+

@@ -70,7 +70,8 @@ export default function ParentForm({
   const [selectedRelationShip, setSelectedRelationShip] = useState<any>(relationships[0]);
   const PreferenceContactMethod = [
     { label: "Phone", value: "Phone" },
-    { label: "Email", value: "Phone" },
+    { label: "Email", value: "Email" },
+    
   ];
   const [selectedPrefernceContactMethod, setSelectedPreferenceContactMethod] =
     useState<any>(PreferenceContactMethod[0]);

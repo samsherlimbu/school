@@ -9,12 +9,13 @@ export default async function page() {
   return (
     <div className="p-8">
       <TableHeader
-        title="Students"
+        title={`Students (${students.length})`}
         linkTitle="Add Student"
         href="/dashboard/students/new"
         data={students}
         model="Parent"
       />
+     
       <div className="py-8">
         <DataTable data={students} columns={columns} />
       </div>

@@ -134,6 +134,10 @@ const sidebarlinks = [
         url: "/dashboard/users/parents",
       },
       {
+        title: "Teachers",
+        url: "/dashboard/users/teachers",
+      },
+      {
         title: "Secretary",
         url: "/dashboard/users/secretary",
       },
@@ -148,7 +152,14 @@ const sidebarlinks = [
         title: "Classes and Streams",
         url: "/dashboard/academic/classes",
       },
-
+       {
+        title: "Subjects",
+        url: "/dashboard/academic/subjects",
+      },
+       {
+        title: "Departments",
+        url: "/dashboard/academic/departments",
+      },
       {
         title: "Timetable",
         url: "/academic/timetable",

@@ -14,6 +14,9 @@ import countryList from "react-select-country-list";
 import CustomPhoneInput from "@/components/FormInputs/phoneInput";
 import { classType, Parent } from "@/types/types";
 import { createStudent } from "@/actions/student";
+import { Value } from "@radix-ui/react-select";
+import generateRegistrationNumber from "@/lib/generatRegNo";
+import generateRollNumber from "@/lib/generateRoll";
 
 export type SelectOptionProps = {
   label: string;
@@ -25,6 +28,7 @@ type SingleStudentFormProps = {
   initialData?: any | undefined | null;
   classes: classType[];
   parents: Parent[];
+  nextSeq: number;
 };
 
 export type StudentProps = {
@@ -34,6 +38,7 @@ export type StudentProps = {
   phone: string;
   dob: string;
   state: string;
+  studentType: string;
   rollNo: string;
   regNo: string;
   admissionDate: string;
@@ -54,6 +59,7 @@ export default function SingleStudentForm({
   initialData,
   classes,
   parents,
+  nextSeq,
 }: SingleStudentFormProps) {
   const parentOptions = parents.map((item) => {
     return { label: item.ParentName, value: item.id };
@@ -92,6 +98,12 @@ export default function SingleStudentForm({
   const [selectedProvince, setSelectedProvince] = useState<any>(
     provincesOfNepal[0]
   );
+  const studentType = [
+    { label: "Private Student", value: "PS" },
+    { label: "Scholar Student", value: "SS" },
+  ];
+  const [selectedStudentType, setSelectedStudentType] =
+    useState<any>(studentType[0]) || null;
 
   const genders = [
     { label: "Male", value: "male" },
@@ -139,6 +151,7 @@ export default function SingleStudentForm({
       data.streamTitle = selectedSection?.label || "";
       data.gender = selectedGender?.value || "";
       data.country = selectedCountry?.label || "";
+      data.studentType = selectedStudentType?.value || "";
       console.log(data);
 
       if (editingId) {
@@ -149,9 +162,15 @@ export default function SingleStudentForm({
         // router.push("/dashboard/category");
         // setImageUrl("/placeholder.svg");
       } else {
+        const rollNo = generateRollNumber();
+        const studentType = data.studentType as "PS" | "SS";
+        const regNo = generateRegistrationNumber(nextSeq, studentType); // Example usage, you can modify the sequence as needed
+        data.regNo = regNo;
+        data.rollNo = rollNo;
+        console.log(data);
         const res = await createStudent(data);
         setLoading(false);
-        toast.success("Created successfully");
+        toast.success("Student Created successfully");
         reset();
         router.push("/dashboard/students");
         // setImageUrl("/placeholder.svg");
@@ -212,18 +231,19 @@ export default function SingleStudentForm({
                 option={selectedProvince}
                 setOption={setSelectedProvince}
               />
-              <TextInput
-                register={register}
-                errors={errors}
-                label="Roll No"
-                name="rollNo"
+              <FormSelectInput
+                isSearchable={false}
+                label="StudentType"
+                options={studentType}
+                option={selectedStudentType}
+                setOption={setSelectedStudentType}
               />
-              <TextInput
+              {/* <TextInput
                 register={register}
                 errors={errors}
                 label="Registration Number."
                 name="regNo"
-              />
+              /> */}
               <TextInput
                 register={register}
                 errors={errors}
@@ -272,6 +292,7 @@ export default function SingleStudentForm({
                   setOption={setSelectedGender}
                   href="/dashboard/gender/new"
                 />
+
                 <FormSelectInput
                   isSearchable={true}
                   label="Country"

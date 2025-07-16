@@ -52,3 +52,13 @@ export async function getAllStudents(){
     console.log(error)
   }
 }
+
+export async function getStudentNextSequence(){
+  try {
+     const response = await api.get("/students/seq");
+     const nextSq = response.data;
+    return nextSq as number;
+  } catch (error) {
+    console.log(error)
+  }
+}

@@ -58,3 +58,18 @@ export async function getStudent(req: Request, res: Response) {
   }
 }
 
+export async function getNextStudentSequence(req: Request, res: Response) {
+  try {
+    const lastStudent = await db.student.findFirst({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    const stringSeq= lastStudent?.regNo.split("/")[3]
+    const lastSeq = stringSeq ? parseInt(stringSeq) : 0;
+    const nextSq = lastSeq +1;
+    return res.status(200).json(nextSq);
+  } catch (error) {
+    console.log(error);
+  }
+}
