@@ -1,6 +1,6 @@
  "use server";
 
-import { ClassCreateProps, classType, Stream, StreamCreateProps } from "@/types/types";
+import { BriefClass, ClassCreateProps, classType, Stream, StreamCreateProps } from "@/types/types";
 import axios from "axios";
 
 // Correctly access public env variable
@@ -60,6 +60,16 @@ export async function getAllClasses(){
      const response = await api.get("/classes");
      const classes = response.data;
     return classes as classType[];
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function getAllBriefClasses(){
+  try {
+     const response = await api.get("/classes/brief");
+     const classes = response.data;
+    return classes as BriefClass[];
   } catch (error) {
     console.log(error)
   }

@@ -51,7 +51,7 @@ export async function getAllSubjects(){
   }
 }
 
-export async function getBriefDepartments(){
+export async function getBriefSubjects(){
   try {
      const response = await api.get("/subjects/brief");
      const subjects = response.data;

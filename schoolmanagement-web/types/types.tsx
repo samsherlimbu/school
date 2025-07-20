@@ -85,7 +85,7 @@ export type StreamCreateProps = {
   classId: string;
 };
 
-export type classType = {
+export type   classType = {
   id: string;
   title: string;
   slug: string;
@@ -120,6 +120,10 @@ export type  BriefStudent = {
   id: string;
   name: string;
 };
+export type  BriefClass = {
+  id: string;
+  title: string;
+}
 
 export type StreamWithCount ={
   id: string;
@@ -179,4 +183,64 @@ export enum SubjectType {
   PRACTICAL = "PRACTICAL",
   BOTH = "BOTH",
 }
+
+export type TeacherCreateProps = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  dateOfBirth: string;
+  employeeId:string;
+  gender: string;
+  imageUrl: string;
+  password: string;
+  dateOfJoining: string;
+  designation: string;
+  departmentId: string;
+  departmentName: string;
+  mainSubject: string;
+   mainSubjectId: string;
+  qualification: string;
+  subjects: string[]; // Used via `selectedSubject`
+  classes: string[]; // Used via `selectedClass`
+  classIds:string[];
+  address: string;
+  state: string;
+  country: string;
+  experience: number;
+  skills?: string;
+  preferenceContactMethod?: string;
+  NIN: string; // National ID / Passport No
+};
+export type Teacher = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  dateOfBirth: string;
+  employeeId:string;
+  gender: string;
+  imageUrl: string;
+  password: string;
+  dateOfJoining: string;
+  designation: string;
+  departmentId: string;
+  departmentName: string;
+  mainSubject: string;
+ 
+  qualification: string;
+  subjects: string[]; // Used via `selectedSubject`
+  classes: string[]; // Used via `selectedClass`
+  address: string;
+  state: string;
+  country: string;
+  experience: number;
+  skills?: string;
+  preferenceContactMethod?: string;
+  NIN: string; // National ID / Passport No
+  createdAt: string;
+  updatedAt: string;
+};
+
 

@@ -13,9 +13,9 @@ href?: string;
 labelShown?: boolean;
 toolTipText?: string;
 isSearchable?: boolean;
-
+isMultiple?: boolean;
 };
-export default function FormSelectInput({
+export default function FormMultipleSelectInput({
 options,
 label,
 option,
@@ -24,8 +24,15 @@ href,
 toolTipText,
 labelShown = true,
 isSearchable= true,
-
+isMultiple = false,
 }: FormSelectInputProps) {
+
+
+function handleChange(item:any){
+  setOption(item);
+  console.log(item)
+}
+
 return (
 <div className="">
   {labelShown && (
@@ -38,9 +45,10 @@ return (
       isSearchable={isSearchable}
       primaryColor="blue"
       value={option}
-      onChange={(item) => setOption(item)}
+      onChange={handleChange}
       options={options}
       placeholder={label}
+      isMultiple={isMultiple}
     />
     {href && toolTipText && (
       <AddNewButton tooltipText={toolTipText} href={href} />

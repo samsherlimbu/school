@@ -73,6 +73,22 @@ export async function getClasses(req: Request, res: Response) {
     console.log(error);
   }
 }
+export async function getBriefClasses(req: Request, res: Response) {
+  try {
+    const classes = await db.class.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+     select:{
+      id:true,
+      title:true,
+     }
+    });
+    return res.status(200).json(classes);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export async function createSection(req:TypedRequestBody<StreamCreateProps>, res: Response) {
 

@@ -4,11 +4,12 @@ import React from "react";
 import DateColumn from "@/components/DataTableColumns/DateColumn";
 import { ColumnDef } from "@tanstack/react-table";
 import ActionColumn from "@/components/DataTableColumns/ActionColumn";
-import { Contact, Parent } from "@/types/types";
+import { Contact, Parent, Teacher } from "@/types/types";
 import ParentInfoModel from "@/components/dashboard/forms/models/ParentCard";
 import Image from "next/image";
+import TeacherInfoModel from "@/components/dashboard/forms/models/TeacherCard";
 
-export const columns: ColumnDef<Parent>[] = [
+export const columns: ColumnDef<Teacher>[] = [
   // {
   //   id: "select",
   //   header: ({ table }) => (
@@ -35,12 +36,12 @@ export const columns: ColumnDef<Parent>[] = [
     accessorKey: "user",
     header: "User",
     cell: ({ row }) => {
-      const parent = row.original;
+      const teacher = row.original;
       return (
         <div className="flex items-center gap-2">
           <Image
-            src={parent.imageUrl || "/images/student.png"} // ✅ fallback to default image
-            alt={parent.ParentName}
+            src={teacher.imageUrl || "/images/student.png"} // ✅ fallback to default image
+            alt={teacher.firstName}
             width={512}
             height={512}
             className="w-10 h-10 rounded-full"
@@ -48,10 +49,10 @@ export const columns: ColumnDef<Parent>[] = [
 
           <div className="">
             <h2 className="font-medium capitalize">
-              {parent.ParentName.toLowerCase()}
+           {teacher.firstName} {teacher.lastName}
             </h2>
             <p className="text-xs text-muted-foreground">
-              {parent.relationShip}
+              {teacher.gender}
             </p>
           </div>
         </div>
@@ -62,13 +63,13 @@ export const columns: ColumnDef<Parent>[] = [
     accessorKey: "Email-Phone",
     header: "Email-Phone",
     cell: ({ row }) => {
-      const parent = row.original;
+      const teacher = row.original;
       return (
         <div className="">
           <h2 className="font-medium capitalize">
-            {parent.email.toLowerCase()}
+            {teacher.email.toLowerCase()}
           </h2>
-          <p className="text-xs text-muted-foreground">{parent.phone}</p>
+          <p className="text-xs text-muted-foreground">{teacher.phone}</p>
         </div>
       );
     },
@@ -109,18 +110,18 @@ export const columns: ColumnDef<Parent>[] = [
   {
     accessorKey: "view",
     header: "View",
-    cell: ({ row }) => <ParentInfoModel parent={row.original} />,
+    cell: ({ row }) => <TeacherInfoModel teacher={row.original} />,
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const parent = row.original;
+      const teacher = row.original;
       return (
         <ActionColumn
           row={row}
-          model="parent"
+          model="teacher"
           editEndpoint={`#`}
-          id={parent.id?.toString()}
+          id={teacher.id?.toString()}
         />
       );
     },

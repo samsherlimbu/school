@@ -17,6 +17,16 @@ datasource db {
 // -------------- ENUMS ------------------------
 //
 
+
+
+enum  UserRole {
+  SUPER_ADMIN
+  ADMIN
+  TEACHER
+  STUDENT
+  PARENT
+}
+
 enum Gender {
   MALE
   FEMALE
@@ -72,6 +82,19 @@ enum SubjectType {
 }
 
 //
+
+
+// prisma/schema.prisma
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 // -------------- SCHOOL MODELS ----------------
 //
 
@@ -80,6 +103,14 @@ model School {
   name      String
   logo      String?
   slug      String   @unique
+
+  teachers   Teacher[]
+  parents    Parent[]
+  students   Student[]
+  streams    Stream[]
+  classes    Class[]
+  departments Department[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -112,6 +143,9 @@ model Class {
   slug      String    @unique
   streams   Stream[]
   students  Student[]
+
+  schoolId              String
+  school                School   @relation(fields: [schoolId],references: [id],onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -125,6 +159,9 @@ model Stream {
   classId   String
   class     Class    @relation(fields: [classId], references: [id])
   students  Student[]
+
+  schoolId              String
+  school                School   @relation(fields: [schoolId],references: [id],onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -142,11 +179,16 @@ model Department {
   subjects     Subject[]
   budget       Float?
   budgetYear   String?
+
+  schoolId              String
+  school                School   @relation(fields: [schoolId],references: [id],onDelete: Cascade)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
   @@map("departments")
 }
+
+
 
 model Subject {
   id            String    @id @default(cuid())
@@ -176,6 +218,28 @@ model Subject {
 // -------------- USERS: PARENTS / STUDENTS / TEACHERS ------------
 //
 
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String
+  password    String
+  phone       String   @unique
+  role        UserRole
+  image       String?   // Optional image URL or path
+  schoolId    String?
+  schoolName  String?
+
+  // One-to-one relationships
+  teacher     Teacher?
+  student     Student?
+  parent      Parent?
+
+   refreshTokens RefreshToken[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Parent {
   id                        String   @id @default(cuid())
   ParentName                String
@@ -193,6 +257,13 @@ model Parent {
   imageUrl                  String?
   country                   String
   students                  Student[]
+  schoolId              String
+  school                School   @relation(fields: [schoolId],references: [id],onDelete: Cascade)
+
+
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt                 DateTime @default(now())
   updatedAt                 DateTime @updatedAt
 
@@ -221,9 +292,14 @@ model Student {
   parentName    String?
   classTitle    String?
   streamTitle   String?
-  parent        Parent   @relation(fields: [parentId], references: [id])
-  class         Class    @relation(fields: [classId], references: [id])
-  stream        Stream   @relation(fields: [streamId], references: [id])
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  parent        Parent   @relation(fields: [parentId], references: [id],onDelete: Cascade)
+  class         Class    @relation(fields: [classId], references: [id],onDelete: Cascade)
+  stream        Stream   @relation(fields: [streamId], references: [id],onDelete: Cascade)
+  schoolId              String
+  school                School   @relation(fields: [schoolId],references: [id],onDelete: Cascade)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -237,17 +313,22 @@ model Teacher {
   email                 String   @unique
   phone                 String  @unique
   dateOfBirth           DateTime?
-  gender                Gender
+  gender                String
   imageUrl              String?
   password              String?
   isActive              Boolean  @default(true)
   lastLogin             DateTime?
-  employeeId            String   @unique
+  employeeId            String?   @unique
   dateOfJoining         DateTime
   designation           String
   departmentName        String
   departmentId          String?
-  department            Department? @relation(fields: [departmentId], references: [id])
+  NIN                   String  @unique
+  department            Department? @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   mainSubject           String?
   mainSubjectId         String?
   qualification         String
@@ -259,12 +340,16 @@ model Teacher {
   state                 String?
   country               String?
   postalCode            String?
+  preferenceContactMethod String?
   emergencyContactName  String?
   emergencyContactPhone String?
   emergencyContactRelation String?
   experience            Int?
   bio                   String?  @db.Text
   skills                String?
+
+ schoolId              String
+  school                School   @relation(fields: [schoolId],references: [id],onDelete: Cascade)
   documents             TeacherDocument[]
   attendance            TeacherAttendance[]
   leaves                TeacherLeave[]

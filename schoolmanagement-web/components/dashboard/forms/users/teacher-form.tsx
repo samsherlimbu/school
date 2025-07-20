@@ -14,48 +14,30 @@ import PasswordInput from "@/components/FormInputs/passwordInput";
 import FormSelectInput from "@/components/FormInputs/formSelectInput";
 import CustomPhoneInput from "@/components/FormInputs/phoneInput";
 import countryList from "react-select-country-list";
+import { TeacherCreateProps } from "@/types/types";
+import { createTeacher } from "@/actions/teachers";
+import FormMultipleSelectInput from "@/components/FormInputs/formMultipleSelectInput copy";
+import generateRollNumber from "@/lib/generateRoll";
 // import { createTeacher } from "@/actions/teacher";
-
-export type TeacherFormValues = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  dateOfBirth?: string;
-  gender: string;
-  imageUrl?: string;
-  password?: string;
-  employeeId: string;
-  dateOfJoining: string;
-  designation: string;
-  departmentId?: string;
-  departmentName: string;
-  mainSubject?: string;
-  qualification: string;
-  subjects: string;
-  classes: string;
-  classIds: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  postalCode?: string;
-  emergencyContactName?: string;
-  emergencyContactPhone?: string;
-  emergencyContactRelation?: string;
-  experience?: string;
-  bio?: string;
-  skills?: string;
-};
 
 type TeacherFormProps = {
   editingId?: string;
   initialData?: any;
+  classes: DataOption[];
+  departmemts: DataOption[];
+  subjects: DataOption[];
+};
+export type DataOption = {
+  label: string;
+  value: string;
 };
 
 export default function TeacherForm({
   editingId,
   initialData,
+  classes,
+  departmemts,
+  subjects,
 }: TeacherFormProps) {
   const provincesOfNepal = [
     { label: "Koshi", value: "Koshi" },
@@ -70,31 +52,15 @@ export default function TeacherForm({
     { label: "Male", value: "Male" },
     { label: "Female", value: "Female" },
   ];
-  const departmentOptions = [
-    { label: "Science", value: "Science" },
-    { label: "Math", value: "Math" },
-  ];
-  const mainSubjects = [
-    { label: "Math", value: "Math" },
-    { label: "Science", value: "Science" },
-    { label: "English", value: "English" },
-    { label: "Social Studies", value: "Social Studies" },
-    { label: "Computer", value: "Computer" },
-  ];
-  const subjects = [
-    { label: "Math", value: "Math" },
-    { label: "Science", value: "Science" },
-    { label: "English", value: "English" },
-    { label: "Social Studies", value: "Social Studies" },
-    { label: "Computer", value: "Computer" },
-  ];
-  const classOptions = [
-    { label: "Math", value: "Math" },
-    { label: "Science", value: "Science" },
-    { label: "English", value: "English" },
-    { label: "Social Studies", value: "Social Studies" },
-    { label: "Computer", value: "Computer" },
-  ];
+  const departmentOptions = departmemts;
+  const mainSubjects = subjects;
+  const subjectOptions = subjects;
+  const classOptions = classes.map((item) => {
+    return {
+      label: item.label,
+      value: item.value,
+    };
+  });
   const qualifications = [
     { label: "Bachelor", value: "Bachelor" },
     { label: "Diploma", value: "Diploma" },
@@ -122,13 +88,11 @@ export default function TeacherForm({
   const [selectedDepartment, setSelectedDepartment] = useState(
     departmentOptions[0] || null
   );
-  const [selectedSubject, setSelectedSubject] = useState(subjects[0]);
+  const [selectedSubject, setSelectedSubject] = useState<any>([]);
   const [selectedQualification, setSelectedQualification] = useState(
     qualifications[0]
   );
-  const [selectedClass, setSelectedClass] = useState<any>(
-    classOptions[0] || null
-  );
+  const [selectedClass, setSelectedClass] = useState<any>([]);
   const [selectedExperience, setSelectedExperience] = useState(
     experienceOptions[0]
   );
@@ -150,29 +114,39 @@ export default function TeacherForm({
     watch,
     reset,
     formState: { errors },
-  } = useForm<TeacherFormValues>({
+  } = useForm<TeacherCreateProps>({
     defaultValues: initialData || {},
   });
 
-  async function onSubmit(data: TeacherFormValues) {
+  async function onSubmit(data: TeacherCreateProps) {
     try {
       setLoading(true);
+      data.employeeId=generateRollNumber();
       data.imageUrl = imageUrl;
-      data.gender = selectedGender.value;
+      data.gender = selectedGender.value; // or as Gender if you import it
       data.state = selectedProvince.value;
       data.country = selectedCountry.label;
-      data.mainSubject = selectedMainSubject.value;
-      data.qualification = selectedQualification.value;
-      data.experience = selectedExperience.value;
+      data.mainSubject = selectedMainSubject.label;
+      data.mainSubjectId = selectedMainSubject.value;
+      data.qualification = selectedQualification.label;
+      data.departmentName= selectedDepartment?.label || "";
+      data.experience = Number(selectedExperience?.value);
+      data.departmentName = selectedDepartment?.label;
+      data.departmentId=selectedDepartment?.value;
+      data.subjects = selectedSubject.map((item:any) => item.label);
+      data.classes = selectedClass.map((item:any)=>item.label);
+      data.classIds=selectedClass.map((item:any)=>item.value);
+      data.preferenceContactMethod = selectedPrefernceContactMethod?.label;
 
       if (editingId) {
         // await updateTeacher(editingId, data)
         // toast.success("Teacher updated successfully");
       } else {
-        // await createTeacher(data);
-        // toast.success("Teacher created successfully");
-        // reset();
-        // router.push("/dashboard/users/teachers");
+        console.log(data)
+        await createTeacher(data);
+        toast.success("Teacher created successfully");
+        reset();
+        router.push("/dashboard/users/teachers");
       }
     } catch (error) {
       console.error(error);
@@ -238,7 +212,7 @@ export default function TeacherForm({
               />
               <TextInput
                 label="National ID/Passport NO"
-                name="employeeId"
+                name="NIN"
                 register={register}
                 errors={errors}
               />
@@ -266,6 +240,7 @@ export default function TeacherForm({
                 options={departmentOptions}
                 option={selectedDepartment}
                 setOption={setSelectedDepartment}
+                toolTipText="Add Department"
                 href="/dashboard/academic/department/new"
               />
               <FormSelectInput
@@ -273,12 +248,18 @@ export default function TeacherForm({
                 options={mainSubjects}
                 option={selectedMainSubject}
                 setOption={setSelectedMainSubject}
+                href="/dashboard/academic/subjects/new"
+                toolTipText="Add Main Subject"
               />
-              <FormSelectInput
+              <FormMultipleSelectInput
+                isSearchable={false}
+                isMultiple={true}
                 label="Side Subjects"
-                options={subjects}
+                options={subjectOptions}
                 option={selectedSubject}
                 setOption={setSelectedSubject}
+                href="/dashboard/academic/subjects/new"
+                toolTipText="Add Side Subject"
               />
               <FormSelectInput
                 label="Qualification"
@@ -287,7 +268,9 @@ export default function TeacherForm({
                 setOption={setSelectedQualification}
               />
 
-              <FormSelectInput
+              <FormMultipleSelectInput
+                isMultiple={true}
+                isSearchable={false}
                 label="Class"
                 options={classOptions}
                 option={selectedClass}
