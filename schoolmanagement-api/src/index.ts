@@ -7,6 +7,7 @@ import studentRouter from "./routes/student";
 import departmentRouter from "./routes/departments";
 import subjectRouter from "./routes/subjects";
 import teacherRouter from "./routes/teachers";
+import userRouter from "./routes/users";
 
 require("dotenv").config();
 const cors = require("cors");
@@ -25,6 +26,7 @@ app.use(studentRouter)
 app.use(departmentRouter);
 app.use(subjectRouter)
 app.use(teacherRouter)
+app.use(userRouter)
 
 app.use(express.json());
 app.listen(PORT, () => {

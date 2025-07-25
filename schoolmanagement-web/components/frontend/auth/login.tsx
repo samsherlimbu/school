@@ -9,11 +9,15 @@ import TextInput from "@/components/FormInputs/textinput";
 import Logo from "@/components/logo";
 import PasswordInput from "@/components/FormInputs/passwordInput";
 import { Lock, LogIn, Mail } from "lucide-react";
-export type RegisterInputProps = {
-  fullName: string;
+import { loginUser } from "@/actions/auth";
+import { useUserSession } from "@/store/auth";
+import { User } from "@/types/types";
+
+export type LoginInputProps = {
+  
   email: string;
   password: string;
-  phone: string;
+  
 };
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);   
@@ -22,9 +26,31 @@ export default function Login() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<RegisterInputProps>();
+  } = useForm<LoginInputProps>();
+
+  const{setUser}=useUserSession();
   const router = useRouter();
-  async function onSubmit(data: RegisterInputProps) {
+  async function onSubmit(data: LoginInputProps) {
+    try {
+      setIsLoading(true)
+      const sessionData= await loginUser(data)
+      //save the data in zustand
+      setUser(sessionData?.user as User)
+
+      const role =sessionData?.user.role
+      //Route the user according to the role
+      console.log(role)
+      setIsLoading(false)
+      if(role==="SUPER_ADMIN"){
+        router.push("/school-onboarding")
+      }else{
+        router.push("/dashboard")
+      }
+    } catch (error) {
+      setIsLoading(false)
+      console.log(error)
+      
+    }
     console.log(data);
   }
   return (
@@ -49,8 +75,17 @@ export default function Login() {
               icon={Mail}
               
             />
+             <TextInput
+              label="Password"
+              register={register}
+              name="password"
+              type="password"
+              errors={errors}
+              placeholder="************"
+              icon={Lock}
+              />
           
-            <PasswordInput
+            {/* <PasswordInput
               label="Password"
               register={register}
               name="password"
@@ -59,7 +94,7 @@ export default function Login() {
               placeholder="******"
               icon={Lock}
               forgotPasswordLink="/forgot-Password"
-            />
+            /> */}
 
             <SubmitButton
             buttonIcon={LogIn}
