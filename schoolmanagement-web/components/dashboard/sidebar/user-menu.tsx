@@ -24,9 +24,10 @@ import {
 } from "lucide-react";
 import { getInitials } from "@/lib/getInitials";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
-export default function userMenu() {
+
+export default function UserMenu() {
   const { user: data,clearSession } = useUserSession();
 
   const user = {
@@ -85,7 +86,7 @@ export default function userMenu() {
             <Sparkles />
             Upgrade to Pro
           </DropdownMenuItem>
-        </DropdownMenuGroup>
+        </DropdownMenuGroup> 
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>

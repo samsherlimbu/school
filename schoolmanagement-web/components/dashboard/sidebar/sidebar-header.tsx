@@ -15,13 +15,14 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu";
+import UserMenu from './user-menu'
 
 
-   const user = {
-      name: "shadcn",
-      email: "m@example.com",
-      avatar: "/avatars/shadcn.jpg",
-    }
+  //  const user = {
+  //     name: "shadcn",
+  //     email: "m@example.com",
+  //     avatar: "/avatars/shadcn.jpg",
+  //   }
   
 
   
@@ -52,7 +53,7 @@ export default function SidebarHeader() {
           <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
-              <DropdownMenu>
+              {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton
                     size="lg"
@@ -131,7 +132,8 @@ export default function SidebarHeader() {
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> */}
+              <UserMenu/>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
