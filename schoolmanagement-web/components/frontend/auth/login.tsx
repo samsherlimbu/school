@@ -11,16 +11,16 @@ import PasswordInput from "@/components/FormInputs/passwordInput";
 import { Lock, LogIn, Mail } from "lucide-react";
 import { loginUser } from "@/actions/auth";
 import { useUserSession } from "@/store/auth";
-import { User } from "@/types/types";
+import { School, User } from "@/types/types";
+import { getSchoolById } from "@/actions/school";
+import useSchoolStore from "@/store/school";
 
 export type LoginInputProps = {
-  
   email: string;
   password: string;
-  
 };
 export default function Login() {
-  const [isLoading, setIsLoading] = useState(false);   
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -28,28 +28,42 @@ export default function Login() {
     formState: { errors },
   } = useForm<LoginInputProps>();
 
-  const{setUser}=useUserSession();
+  const { setUser } = useUserSession();
+  const { setSchool } = useSchoolStore();
   const router = useRouter();
   async function onSubmit(data: LoginInputProps) {
     try {
-      setIsLoading(true)
-      const sessionData= await loginUser(data)
-      //save the data in zustand
-      setUser(sessionData?.user as User)
+      setIsLoading(true);
+      const sessionData = await loginUser(data);
+      console.log("Session Data:", sessionData);
 
-      const role =sessionData?.user.role
+      const role = sessionData?.user.role;
+
+      console.log(sessionData?.user.schoolId);
+      //fetch the school
+      const school = await getSchoolById(sessionData?.user.schoolId);
+      console.log("Fetched school:", school);
+
+      console.log("User school:", school);
+      if (school?.id) {
+        setSchool(school as School);
+      } else {
+        console.warn("Invalid school fetched, not setting store");
+      }
+      //save the data in zustand
+      setUser(sessionData?.user as User);
+
       //Route the user according to the role
-      console.log(role)
-      setIsLoading(false)
-      if(role==="SUPER_ADMIN"){
-        router.push("/school-onboarding")
-      }else{
-        router.push("/dashboard")
+      console.log(role);
+      setIsLoading(false);
+      if (role === "SUPER_ADMIN") {
+        router.push("/school-onboarding");
+      } else {
+        router.push("/dashboard");
       }
     } catch (error) {
-      setIsLoading(false)
-      console.log(error)
-      
+      setIsLoading(false);
+      console.log(error);
     }
     console.log(data);
   }
@@ -64,7 +78,6 @@ export default function Login() {
             <h1 className="text-3xl font-bold">Login to your Account</h1>
           </div>
           <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
-           
             <TextInput
               label="Email Address"
               register={register}
@@ -73,9 +86,8 @@ export default function Login() {
               errors={errors}
               placeholder="Eg. johndoe@gmail.com"
               icon={Mail}
-              
             />
-             <TextInput
+            <TextInput
               label="Password"
               register={register}
               name="password"
@@ -83,8 +95,8 @@ export default function Login() {
               errors={errors}
               placeholder="************"
               icon={Lock}
-              />
-          
+            />
+
             {/* <PasswordInput
               label="Password"
               register={register}
@@ -97,7 +109,7 @@ export default function Login() {
             /> */}
 
             <SubmitButton
-            buttonIcon={LogIn}
+              buttonIcon={LogIn}
               title="Sign In"
               loading={isLoading}
               loadingTitle="Signing in please wait..."

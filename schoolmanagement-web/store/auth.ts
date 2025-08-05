@@ -2,6 +2,7 @@
 import { logout } from "@/actions/auth";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import useSchoolStore from "./school";
 
 
 // User type
@@ -52,6 +53,7 @@ export const useUserSession = create<UserSessionStore>()(
           const result = await logout();
           if (result.success) {
             set({ user: null });
+             useSchoolStore.getState().clearSchool();
           } else {
             throw new Error("Logout failed");
           }

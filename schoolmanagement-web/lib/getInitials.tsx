@@ -4,7 +4,8 @@ export  function getInitials(name:string |null |undefined):string{
         const nameParts=name.split(" ")
 
         //Map over the parts and  take the first character of each
-        const initials = nameParts.map((part)=>part.charAt(0).toUpperCase)
+       const initials = nameParts.map((part) => part.charAt(0).toUpperCase());
+
 
         //join the initials together
         return initials.join("")

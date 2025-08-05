@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/collapsible";
 
 import Logo from "@/components/logo";
+import UserMenu from "./user-menu";
 
 
 
@@ -382,7 +383,7 @@ const sidebarlinks = [
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-           
+           <UserMenu/>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
