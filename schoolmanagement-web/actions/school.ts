@@ -35,7 +35,7 @@ export async function getSchoolById(id:string | undefined | null) {
 if(id){
       try {
      const response = await api.get(`/schools/${id}`);
-     const school = response.data.data;
+     const school = response.data;
     return school as School;
   } catch (error) {
     console.log(error)
